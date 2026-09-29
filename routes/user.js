@@ -55,6 +55,35 @@ const createUser = async (req, res) => {
   return;
 };
 
+async function getUsers(req, res) {
+  try {
+    const result = await client.query(`
+      SELECT id, name, email
+      FROM users
+      ORDER BY id;
+    `);
+
+    res.writeHead(200, {
+      "Content-Type": "application/json",
+    });
+
+    res.end(JSON.stringify(result.rows));
+  } catch (error) {
+    console.error(error);
+
+    res.writeHead(500, {
+      "Content-Type": "application/json",
+    });
+
+    res.end(
+      JSON.stringify({
+        error: "Failed to fetch users",
+      }),
+    );
+  }
+}
+
 module.exports = {
   createUser,
+  getUsers,
 };

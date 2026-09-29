@@ -1,7 +1,7 @@
 const http = require("http");
 const _ = require("lodash");
 
-const { createUser } = require("./routes/user");
+const { createUser, getUsers } = require("./routes/user");
 const { initializeDatabase, client } = require("./utils/init-db");
 
 const message = _.upperCase("Hello from Tut4!");
@@ -9,6 +9,9 @@ const message = _.upperCase("Hello from Tut4!");
 const server = http.createServer(async (req, res) => {
   if (req.method === "POST" && req.url === "/users") {
     return await createUser(req, res);
+  }
+  if (req.method === "GET" && req.url === "/users") {
+    return getUsers(req, res);
   }
   try {
     await client.query("SELECT NOW()");
