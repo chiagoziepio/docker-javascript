@@ -3,6 +3,7 @@ const _ = require("lodash");
 
 const { createUser, getUsers } = require("./routes/user");
 const { initializeDatabase, client } = require("./utils/init-db");
+const { createPost, getPosts, getPost } = require("./routes/posts");
 
 const message = _.upperCase("Hello from Tut4!");
 
@@ -12,6 +13,17 @@ const server = http.createServer(async (req, res) => {
   }
   if (req.method === "GET" && req.url === "/users") {
     return getUsers(req, res);
+  }
+  if (req.method === "POST" && req.url === "/posts") {
+    return createPost(req, res);
+  }
+
+  if (req.method === "GET" && req.url === "/posts") {
+    return getPosts(req, res);
+  }
+
+  if (req.method === "GET" && req.url.startsWith("/posts/")) {
+    return getPost(req, res);
   }
   try {
     await client.query("SELECT NOW()");
