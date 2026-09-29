@@ -1,18 +1,15 @@
 const http = require("http");
 const _ = require("lodash");
-const { Client } = require("pg");
+
+const { createUser } = require("./routes/user");
+const { initializeDatabase, client } = require("./utils/init-db");
 
 const message = _.upperCase("Hello from Tut4!");
 
-const client = new Client({
-  host: "db",
-  port: 5432,
-  user: process.env.POSTGRES_USER,
-  password: process.env.POSTGRES_PASSWORD,
-  database: process.env.POSTGRES_DB,
-});
-
 const server = http.createServer(async (req, res) => {
+  if (req.method === "POST" && req.url === "/users") {
+    return await createUser(req, res);
+  }
   try {
     await client.query("SELECT NOW()");
 
@@ -34,6 +31,7 @@ const server = http.createServer(async (req, res) => {
 
 async function startServer() {
   await client.connect();
+  await initializeDatabase(client);
 
   server.listen(3000, () => {
     console.log("Server running on port 3000");
